@@ -1,7 +1,7 @@
 from biodb_expression_atlas.web.models import atlas
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from ..models.atlas import Experiments
+from ..models.atlas import *
 from typing import Dict
 
 class Group1:
@@ -31,6 +31,11 @@ class Group1:
         elif group_id not in experiment_groups[experiment_id]:
             raise ValueError (f"Incorrect group ID for experiment {experiment_id}")        
 
+        map_dict = {'E-MEXP-1416' : E_MEXP_1416,
+             'E-GEOD-20333' : E_GEOD_20333,
+             'E-GEOD-7307' : E_GEOD_7307,
+             'E-GEOD-7621' : E_GEOD_7621,
+             'E-GEOD-20168' : E_GEOD_20168}
             
         con_str ='mysql+pymysql://pd_user:pd_password@localhost/pd_atlas'
         engine = create_engine(con_str)
@@ -39,7 +44,9 @@ class Group1:
         # SQL query
         experiment_group_id = session.query(Experiments).filter(Experiments.experiment_id==experiment_id, Experiments.group_id==group_id).one()
         
-        genes_up = session.query(Experiments).join(experiment_id).filter(experiment_id.experiment_group==experiment_group_id, experiment_id.p_value < threshold_p_value, experiment_id.log2foldchange > threshold_log2fold_change).all()
-        genes_down = session.query(Experiments).join(experiment_id).filter(experiment_id.experiment_group==experiment_group_id, experiment_id.p_value < threshold_p_value, experiment_id.log2foldchange < - threshold_log2fold_change).all()
+        genes_up = session.query(Experiments).join(map_dict[experiment_id]).filter(map_dict[experiment_id].experiment_group==experiment_group_id, map_dict[experiment_id].p_value < threshold_p_value, \
+                    map_dict[experiment_id].log2foldchange > threshold_log2fold_change).all()
+        genes_down = session.query(Experiments).join(map_dict[experiment_id]).filter(map_dict[experiment_id].experiment_group==experiment_group_id, map_dict[experiment_id].p_value < threshold_p_value, \
+                    map_dict[experiment_id].log2foldchange < - threshold_log2fold_change).all()
         
         return {'up':genes_up,'down':genes_down}
