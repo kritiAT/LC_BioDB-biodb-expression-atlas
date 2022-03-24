@@ -133,7 +133,7 @@ class PD_db:
 
 
 ### wrapper function to create the database
-def Create_Database():
+def create_database():
     obj = PD_db(engine=engine, Base=Base)
     obj.create_database()
 

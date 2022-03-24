@@ -2,6 +2,7 @@ from biodb_expression_atlas.web.models import atlas
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from ..models.atlas import engine, Experiments
+from typing import Dict,List
 
 class Group1:
     '''Class for extracting upregulated and downregulated genes from Expression Atlas.'''
