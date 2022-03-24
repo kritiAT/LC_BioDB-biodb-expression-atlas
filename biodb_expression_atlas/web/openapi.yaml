@@ -6,7 +6,7 @@ info:
   title: Expression_atlas RESTful API
   version: '1.0.0'
   contact:
-    name: Shubhi Ambast, Zexin Li,Kriti Amin
+    name:  Shubhi Ambast, Zexin Li,Kriti Amin
     email: shubhiambast@gmail.com, ZexinLi2020@outlook.com,kritiamin6461@gmail.com
     
   license:
@@ -22,8 +22,12 @@ info:
     available information on the abundance and localisation of RNA (and proteins) 
     across species and biological conditions such as different tissues, 
     cell types, developmental stages and diseases among others.
+
+    In this package, user can query and get upregulated and downregulated genes
+    related to Parkinson's disease based on p-value and log 2 fold change from Expression 
+    atlas experiments. 
     
-    Following things are included in Expression_atlas:
+    
 
 
 tags:
@@ -45,7 +49,7 @@ paths:
       tags:
         - Expression_atlas
       summary: To query expression_atlas
-      description: Get upregulated and downregulated genes
+      description: Get upregulated and downregulated genes based on p-value and log2 fold change
       parameters:
         - name : experiment_id
           in: query
