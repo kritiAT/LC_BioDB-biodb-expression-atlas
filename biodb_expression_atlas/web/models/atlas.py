@@ -20,7 +20,7 @@ class Experiments(Base):
     experiment_id = Column(String(30),nullable=False)
     group_id = Column(String(30),nullable=False)
 
-class Experiment_1(Base):
+class E_MEXP_1416(Base):
     __tablename__ = 'E_MEXP_1416'
     id = Column(Integer,primary_key = True)
     gene_name = Column(String(30),nullable=False)
@@ -28,7 +28,7 @@ class Experiment_1(Base):
     log2foldchange = Column(Float,nullable=False)
     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
 
-class Experiment_2(Base):
+class E_GEOD_20333(Base):
     __tablename__ = 'E_GEOD_20333'
     id = Column(Integer,primary_key = True)
     gene_name = Column(String(30),nullable=False)
@@ -36,7 +36,7 @@ class Experiment_2(Base):
     log2foldchange = Column(Float,nullable=False)
     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
 
-class Experiment_3(Base):
+class E_GEOD_7307(Base):
     __tablename__ = 'E_GEOD_7307'
     id = Column(Integer,primary_key = True)
     gene_name = Column(String(30),nullable=False)
@@ -44,7 +44,7 @@ class Experiment_3(Base):
     log2foldchange = Column(Float,nullable=False)
     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
     
-class Experiment_4(Base):
+class E_GEOD_7621(Base):
     __tablename__ = 'E_GEOD_7621'
     id = Column(Integer,primary_key = True)
     gene_name = Column(String(30),nullable=False)
@@ -52,7 +52,7 @@ class Experiment_4(Base):
     log2foldchange = Column(Float,nullable=False)
     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
     
-class Experiment_5(Base):
+class E_GEOD_20168(Base):
     __tablename__ = 'E_GEOD_20168'
     id = Column(Integer,primary_key = True)
     gene_name = Column(String(30),nullable=False)

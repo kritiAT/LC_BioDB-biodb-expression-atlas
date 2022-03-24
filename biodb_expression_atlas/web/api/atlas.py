@@ -1,8 +1,8 @@
 from biodb_expression_atlas.web.models import atlas
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from ..models.atlas import engine, Experiments
-from typing import Dict,List
+from ..models.atlas import Experiments
+from typing import Dict
 
 class Group1:
     '''Class for extracting upregulated and downregulated genes from Expression Atlas.'''
@@ -36,10 +36,10 @@ class Group1:
         engine = create_engine(con_str)
         session = Session(engine)
         
-        # SQL query   
+        # SQL query
         experiment_group_id = session.query(Experiments).filter(Experiments.experiment_id==experiment_id, Experiments.group_id==group_id).one()
         
-        genes_up = session.query(Experiments).join(experiment_id).filter(experiment_id.p_value < threshold_p_value, experiment_id.log2foldchange > threshold_log2fold_change).all()
-        genes_down = session.query(Experiments).join(experiment_id).filter(experiment_id.p_value < threshold_p_value, experiment_id.log2foldchange < - threshold_log2fold_change).all()
+        genes_up = session.query(Experiments).join(experiment_id).filter(experiment_id.experiment_group==experiment_group_id, experiment_id.p_value < threshold_p_value, experiment_id.log2foldchange > threshold_log2fold_change).all()
+        genes_down = session.query(Experiments).join(experiment_id).filter(experiment_id.experiment_group==experiment_group_id, experiment_id.p_value < threshold_p_value, experiment_id.log2foldchange < - threshold_log2fold_change).all()
         
         return {'up':genes_up,'down':genes_down}
