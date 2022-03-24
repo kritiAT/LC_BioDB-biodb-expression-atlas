@@ -1,0 +1,89 @@
+openapi: 3.0.0
+servers:
+  - url: https://localhost
+    description: My crazy server
+info:
+  title: Expression_atlas RESTful API
+  version: '1.0.0'
+  contact:
+    name: Shubhi Ambast, Zexin Li,Kriti Amin
+    email: shubhiambast@gmail.com, ZexinLi2020@outlook.com,kritiamin6461@gmail.com
+    
+  license:
+    name: Fraunhofer SCAI
+    url: https://www.scai.fraunhofer.de
+  description: |
+
+    ## Background
+
+    Expression Atlas is an open science resource that gives users a 
+    powerful way to find information about gene and protein expression. 
+    Our mission is to provide the scientific community with freely 
+    available information on the abundance and localisation of RNA (and proteins) 
+    across species and biological conditions such as different tissues, 
+    cell types, developmental stages and diseases among others.
+    
+    Following things are included in Expression_atlas:
+
+
+tags:
+  - name: Expression_atlas
+    description: gene expression
+    externalDocs:
+      url: https://www.ebi.ac.uk/gxa/home
+
+paths:
+
+  ########################################################################################################################
+  # Expression_atlas
+  ########################################################################################################################
+  
+
+  /api/atlas/Group1.get_up_and_down_regulated_hgnc_symbols:
+    get:
+      operationId: biodb_expression_atlas.web.api.atlas.Group1.get_up_and_down_regulated_hgnc_symbols
+      tags:
+        - Expression_atlas
+      summary: To query expression_atlas
+      description: Get upregulated and downregulated genes
+      parameters:
+        - experiment_id : experiment_id
+          in: query
+          description : Experiment ID
+          required: true
+          schema:
+            type: string
+            example: "E-GEOD-7307"
+        - group_id : group_id
+          in: query
+          description : Group ID
+          required: true
+          schema:
+            type: string
+            example: "g83_g17"
+        - threshold_p_value : threshold_p_value
+          in: query
+          description : Threshold p-value
+          required: true
+          schema:
+            type: number
+            example: 0.05
+        - threshold_log2fold_change : threshold_log2fold_change
+          in: query
+          description : Threshold log2 fold change
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        '200':
+          description: Return results
+          content:
+              application/json:
+                schema:
+                    type: string
+
+
+  ########################################################################################################################
+  # Expression_atlas
+  ########################################################################################################################

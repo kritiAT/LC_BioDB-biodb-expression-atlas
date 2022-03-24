@@ -10,7 +10,15 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=7.0', ]
+requirements = [
+    'Click>=7.0', 
+    'SQLAlchemy>=1.4.32', 
+    'pandas>=1.4.1', 
+    'Flask-Cors>=3.0.10', 
+    'connexion[swagger-ui]', 
+    'PyMySQL>=1.0.2', 
+    'Flask>=2.0.3'
+  ]
 
 test_requirements = [ ]
 

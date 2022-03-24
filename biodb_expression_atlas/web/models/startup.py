@@ -1,6 +1,5 @@
 import os
 import requests
-import pymysql
 from pathlib import Path
 from getpass import getpass
 
@@ -8,8 +7,6 @@ from getpass import getpass
 home_dir = Path.home()
 PROJECT_DIR = home_dir.joinpath(".Biodb_expression_atlas")
 DATA_DIR = PROJECT_DIR.joinpath("data")
-DB_PATH = PROJECT_DIR.joinpath("group1.db")
-Data_folder = '..\\pd_data_files\\'
 
 # create data folder if not exists
 if not os.path.exists(DATA_DIR):
@@ -36,18 +33,17 @@ for exp in experiments:
         open(path, 'wb').write(req.content)
 
 
-root_password = getpass(prompt='MySQL root password: ')
-
+# root_password = getpass(prompt='MySQL root password: ')
 # create MySQL database and user
-connection_root = pymysql.connect(host='localhost',
-                          user='root',
-                          password=root_password,
-                          charset='utf8mb4')
-cursor_root = connection_root.cursor()
-cursor_root.execute("drop database if exists pd_atlas")
-cursor_root.execute("create database if not exists pd_atlas")
+# connection_root = pymysql.connect(host='localhost',
+#                           user='root',
+#                           password=root_password,
+#                           charset='utf8mb4')
+# cursor_root = connection_root.cursor()
+# cursor_root.execute("drop database if exists pd_atlas")
+# cursor_root.execute("create database if not exists pd_atlas")
 
-cursor_root.execute("CREATE USER IF NOT EXISTS 'pd_user'@'localhost' IDENTIFIED BY 'pd_password'")
-cursor_root.execute("GRANT ALL ON `pd_atlas`.* TO 'pd_user'@'localhost'")
-cursor_root.execute("flush privileges")
-connection_root.close()
+# cursor_root.execute("CREATE USER IF NOT EXISTS 'pd_user'@'localhost' IDENTIFIED BY 'pd_password'")
+# cursor_root.execute("GRANT ALL ON `pd_atlas`.* TO 'pd_user'@'localhost'")
+# cursor_root.execute("flush privileges")
+# connection_root.close()

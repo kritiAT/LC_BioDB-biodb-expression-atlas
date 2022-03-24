@@ -1,0 +1,3 @@
+[console_scripts]
+biodb_expression_atlas = biodb_expression_atlas.cli:main
+
