@@ -4,7 +4,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from biodb_expression_atlas.web.models.atlas import *
 from typing import Dict
-import cryptography
 class Group1:
     '''Class for extracting upregulated and downregulated genes from Expression Atlas.'''
     @staticmethod
@@ -56,6 +55,3 @@ class Group1:
         genes_down = [g[0] for g in genes_down]
         
         return {'up':genes_up,'down':genes_down}
-
-test = Group1.get_up_and_down_regulated_hgnc_symbols(experiment_id='E-GEOD-7621',group_id='g1_g2')
-print(test)

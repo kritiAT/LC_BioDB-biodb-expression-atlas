@@ -6,7 +6,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, create_engine
 
 from .startup import datafile_paths
-import cryptography
+from .startup import create_new_database
+
+create_new_database()
 Base = declarative_base()
 
 con_str ='mysql+pymysql://pd_user:pd_password@localhost/pd_atlas'

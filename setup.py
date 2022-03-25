@@ -17,7 +17,8 @@ requirements = [
     'Flask-Cors>=3.0.10', 
     'connexion[swagger-ui]', 
     'PyMySQL>=1.0.2', 
-    'Flask>=2.0.3'
+    'Flask>=2.0.3',
+    'cryptography'
   ]
 
 test_requirements = [ ]
