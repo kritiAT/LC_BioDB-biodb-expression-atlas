@@ -2,11 +2,9 @@ import os
 import pandas as pd
 import pymysql
 from getpass import getpass
-
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, create_engine
-
 from .startup import datafile_paths
 
 Base = declarative_base()
@@ -16,10 +14,10 @@ engine = create_engine(con_str)
 session = Session(engine)
 
 
-class ComparisonGroup(Base): # change name  to experiment
-    """Class definition for parkinson_experiment table."""
-    __tablename__ = 'comparison_group' # change name  to comparison_group
-    id = Column(Integer,primary_key = True)  # change exp id to id
+class ComparisonGroup(Base): 
+    """Class definition for 'comparison_group' table."""
+    __tablename__ = 'comparison_group' 
+    id = Column(Integer,primary_key = True)  
     experiment_id = Column(String(30),nullable=False)
     group_id = Column(String(30),nullable=False)
 
@@ -31,53 +29,7 @@ class Expression(Base):
     p_value = Column(Float)
     log2foldchange = Column(Float,nullable=False)
     experiment_group = Column(Integer, ForeignKey('comparison_group.id'), nullable=False)
-
-# class E_MEXP_1416(Base):
-#     """Class definition for 'E_MEXP_1416' table."""
-#     __tablename__ = 'E_MEXP_1416'
-#     id = Column(Integer,primary_key = True)
-#     gene_name = Column(String(30),nullable=False)
-#     p_value = Column(Float)
-#     log2foldchange = Column(Float,nullable=False)
-#     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
-
-# class E_GEOD_20333(Base):
-#     """Class definition for 'E_GEOD_20333' table."""
-#     __tablename__ = 'E_GEOD_20333'
-#     id = Column(Integer,primary_key = True)
-#     gene_name = Column(String(30),nullable=False)
-#     p_value = Column(Float)
-#     log2foldchange = Column(Float,nullable=False)
-#     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
-
-# class E_GEOD_7307(Base):
-#     """Class definition for 'E_GEOD_7307' table."""
-#     __tablename__ = 'E_GEOD_7307'
-#     id = Column(Integer,primary_key = True)
-#     gene_name = Column(String(30),nullable=False)
-#     p_value = Column(Float)
-#     log2foldchange = Column(Float,nullable=False)
-#     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
-    
-# class E_GEOD_7621(Base):
-#     """Class definition for 'E_GEOD_7621' table."""
-#     __tablename__ = 'E_GEOD_7621'
-#     id = Column(Integer,primary_key = True)
-#     gene_name = Column(String(30),nullable=False)
-#     p_value = Column(Float)
-#     log2foldchange = Column(Float,nullable=False)
-#     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
-    
-# class E_GEOD_20168(Base):
-#     """Class definition for 'E_GEOD_20168' table."""
-#     __tablename__ = 'E_GEOD_20168'
-#     id = Column(Integer,primary_key = True)
-#     gene_name = Column(String(30),nullable=False)
-#     p_value = Column(Float)
-#     log2foldchange = Column(Float,nullable=False)
-#     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
-
-
+ 
 class PD_db:
     """ Create and Import data in the database """
     def __init__(self, engine, Base):
@@ -86,9 +38,7 @@ class PD_db:
         self.parkinson_exp = None
         self.exp_tables = None
     
-
     def create_database(self):
-
         self.create_new_db()
         self.Base.metadata.drop_all(self.engine)
         self.Base.metadata.create_all(self.engine)

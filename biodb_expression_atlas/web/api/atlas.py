@@ -1,9 +1,9 @@
 from webbrowser import Grail
-from biodb_expression_atlas.web.models import atlas
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from biodb_expression_atlas.web.models.atlas import *
 from typing import Dict
+
 class PD_Atlas:
     '''Class for extracting upregulated and downregulated genes from Expression Atlas related to Parkinson Disease.'''
     @staticmethod
@@ -42,13 +42,7 @@ class PD_Atlas:
             raise ValueError ("Incorrect experiment ID for Parkinson's disease")
         elif group_id not in experiment_groups[experiment_id]:
             raise ValueError (f"Incorrect group ID for experiment {experiment_id}")        
-
-        # map_dict = {'E-MEXP-1416' : E_MEXP_1416,
-        #      'E-GEOD-20333' : E_GEOD_20333,
-        #      'E-GEOD-7307' : E_GEOD_7307,
-        #      'E-GEOD-7621' : E_GEOD_7621,
-        #      'E-GEOD-20168' : E_GEOD_20168}
-        
+                    
         # connect to database
         con_str ='mysql+pymysql://pd_user:pd_password@localhost/pd_atlas'
         engine = create_engine(con_str)
@@ -56,7 +50,7 @@ class PD_Atlas:
         
         # SQL Query
         experiment_group_id = session.query(ComparisonGroup).filter(ComparisonGroup.experiment_id==experiment_id, ComparisonGroup.group_id==group_id).one()
-        id = experiment_group_id.exp_id
+        id = experiment_group_id.id
         
         genes_up = session.query(Expression.gene_name).filter(Expression.experiment_group==id, Expression.p_value < threshold_p_value, \
                     Expression.log2foldchange > threshold_log2fold_change).order_by(Expression.log2foldchange).all()
