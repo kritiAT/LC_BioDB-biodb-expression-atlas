@@ -11,9 +11,21 @@ class Group1:
                  experiment_id: str,
                  group_id: str,
                  threshold_p_value : float = 0.05,
-                 threshold_log2fold_change: float=1) -> Dict[list, list]:
+                 threshold_log2fold_change: float = 1) -> Dict[list, list]:
                  
         '''Queries the database according to the input values
+        
+        Parameters
+        ----------
+        experiment_id: str
+            Gene experiment id of Expression Atlas 
+        group_id: str
+            Group id of variables
+        threshold_p_value: float
+            Threshold of p-value, 0.05 by default
+        threshold_log2fold_change: float
+            Threshold of log 2 fold change, 1 by default
+        
         Returns
         -------
         Dict[list, list]
@@ -36,14 +48,14 @@ class Group1:
              'E-GEOD-7307' : E_GEOD_7307,
              'E-GEOD-7621' : E_GEOD_7621,
              'E-GEOD-20168' : E_GEOD_20168}
-            
+        
+        # connect to database
         con_str ='mysql+pymysql://pd_user:pd_password@localhost/pd_atlas'
         engine = create_engine(con_str)
         session = Session(engine)
         
-        #query
+        # SQL Query
         experiment_group_id = session.query(Experiments).filter(Experiments.experiment_id==experiment_id, Experiments.group_id==group_id).one()
-        
         id = experiment_group_id.exp_id
         
         genes_up = session.query(map_dict[experiment_id].gene_name).filter(map_dict[experiment_id].experiment_group==id, map_dict[experiment_id].p_value < threshold_p_value, \
