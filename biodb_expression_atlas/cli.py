@@ -2,7 +2,9 @@
 import sys
 import click
 from .web import app
-from .web.models.atlas import create_database
+from .web.models.atlas import database
+from getpass import getpass
+import pymysql
 
 
 @click.command()
@@ -28,7 +30,7 @@ def serve(port, debug_mode, open_browser):
 @main.command()
 def import_database():
     """Import data in db."""
-    create_database()
+    database()
 
 
 if __name__ == "__main__":

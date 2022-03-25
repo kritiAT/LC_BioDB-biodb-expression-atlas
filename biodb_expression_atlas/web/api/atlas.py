@@ -1,25 +1,26 @@
+from webbrowser import Grail
 from biodb_expression_atlas.web.models import atlas
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from ..models.atlas import *
+from biodb_expression_atlas.web.models.atlas import *
 from typing import Dict
-
+import cryptography
 class Group1:
     '''Class for extracting upregulated and downregulated genes from Expression Atlas.'''
-
     @staticmethod
     def get_up_and_down_regulated_hgnc_symbols(
                  experiment_id: str,
                  group_id: str,
                  threshold_p_value : float = 0.05,
                  threshold_log2fold_change: float=1) -> Dict[list, list]:
+                 
         '''Queries the database according to the input values
         Returns
         -------
         Dict[list, list]
             a dictionary of two lists(genes_up and genes_down)
         '''
-        
+
         # check whether experiment id and group id are correct
         experiment_groups = {'E-MEXP-1416' : ['g2_g1', 'g4_g3'],
              'E-GEOD-20333' : ['g2_g1'],
@@ -41,12 +42,20 @@ class Group1:
         engine = create_engine(con_str)
         session = Session(engine)
         
-        # SQL query
+        #query
         experiment_group_id = session.query(Experiments).filter(Experiments.experiment_id==experiment_id, Experiments.group_id==group_id).one()
         
-        genes_up = session.query(Experiments).join(map_dict[experiment_id]).filter(map_dict[experiment_id].experiment_group==experiment_group_id, map_dict[experiment_id].p_value < threshold_p_value, \
+        id = experiment_group_id.exp_id
+        
+        genes_up = session.query(map_dict[experiment_id].gene_name).filter(map_dict[experiment_id].experiment_group==id, map_dict[experiment_id].p_value < threshold_p_value, \
                     map_dict[experiment_id].log2foldchange > threshold_log2fold_change).all()
-        genes_down = session.query(Experiments).join(map_dict[experiment_id]).filter(map_dict[experiment_id].experiment_group==experiment_group_id, map_dict[experiment_id].p_value < threshold_p_value, \
+        genes_up = [g[0] for g in genes_up]
+        
+        genes_down = session.query(map_dict[experiment_id].gene_name).filter(map_dict[experiment_id].experiment_group==id, map_dict[experiment_id].p_value < threshold_p_value, \
                     map_dict[experiment_id].log2foldchange < - threshold_log2fold_change).all()
+        genes_down = [g[0] for g in genes_down]
         
         return {'up':genes_up,'down':genes_down}
+
+test = Group1.get_up_and_down_regulated_hgnc_symbols(experiment_id='E-GEOD-7621',group_id='g1_g2')
+print(test)

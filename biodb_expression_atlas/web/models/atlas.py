@@ -6,7 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, create_engine
 
 from .startup import datafile_paths
-
+import cryptography
 Base = declarative_base()
 
 con_str ='mysql+pymysql://pd_user:pd_password@localhost/pd_atlas'
@@ -15,12 +15,14 @@ session = Session(engine)
 
 
 class Experiments(Base):
+    """Class definition for parkinson_experiment table."""
     __tablename__ = 'parkinson_experiment'
     exp_id = Column(Integer,primary_key = True)
     experiment_id = Column(String(30),nullable=False)
     group_id = Column(String(30),nullable=False)
 
 class E_MEXP_1416(Base):
+    """Class definition for 'E_MEXP_1416' table."""
     __tablename__ = 'E_MEXP_1416'
     id = Column(Integer,primary_key = True)
     gene_name = Column(String(30),nullable=False)
@@ -29,6 +31,7 @@ class E_MEXP_1416(Base):
     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
 
 class E_GEOD_20333(Base):
+    """Class definition for 'E_GEOD_20333' table."""
     __tablename__ = 'E_GEOD_20333'
     id = Column(Integer,primary_key = True)
     gene_name = Column(String(30),nullable=False)
@@ -37,6 +40,7 @@ class E_GEOD_20333(Base):
     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
 
 class E_GEOD_7307(Base):
+    """Class definition for 'E_GEOD_7307' table."""
     __tablename__ = 'E_GEOD_7307'
     id = Column(Integer,primary_key = True)
     gene_name = Column(String(30),nullable=False)
@@ -45,6 +49,7 @@ class E_GEOD_7307(Base):
     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
     
 class E_GEOD_7621(Base):
+    """Class definition for 'E_GEOD_7621' table."""
     __tablename__ = 'E_GEOD_7621'
     id = Column(Integer,primary_key = True)
     gene_name = Column(String(30),nullable=False)
@@ -53,6 +58,7 @@ class E_GEOD_7621(Base):
     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
     
 class E_GEOD_20168(Base):
+    """Class definition for 'E_GEOD_20168' table."""
     __tablename__ = 'E_GEOD_20168'
     id = Column(Integer,primary_key = True)
     gene_name = Column(String(30),nullable=False)
@@ -63,7 +69,6 @@ class E_GEOD_20168(Base):
 
 class PD_db:
     """ Create and Import data in the database """
-    
     def __init__(self, engine, Base):
         self.Base = Base
         self.engine = engine
@@ -82,6 +87,7 @@ class PD_db:
                      'E-GEOD-7307' : ['g83_g17','g82_g16', 'g72_g15', 'g63_g14', 'g48_g13'],
                      'E-GEOD-7621' : ['g1_g2'],
                      'E-GEOD-20168' : ['g2_g1']}
+                     
         # table with all experiments and groups
         parkinson_exp = pd.DataFrame(exp_group.items(), columns=['experiment_id', 'group_id'])
         parkinson_exp = parkinson_exp.explode('group_id', ignore_index=True)
@@ -123,6 +129,7 @@ class PD_db:
         self.exp_tables = exp_tables
     
     def _import_data(self):
+        # Imports data from dataframe into database
         self._experiment_groups()
         self._experiment_tables()
         self.parkinson_exp.to_sql('parkinson_experiment', self.engine, if_exists='append', index=True)
@@ -133,7 +140,6 @@ class PD_db:
 
 
 ### wrapper function to create the database
-def create_database():
+def database():
     obj = PD_db(engine=engine, Base=Base)
     obj.create_database()
-
