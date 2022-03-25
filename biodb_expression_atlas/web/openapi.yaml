@@ -43,9 +43,9 @@ paths:
   ########################################################################################################################
   
 
-  /api/atlas/Group1.get_up_and_down_regulated_hgnc_symbols:
+  /api/atlas/PD_Atlas.get_up_and_down_regulated_hgnc_symbols:
     get:
-      operationId: biodb_expression_atlas.web.api.atlas.Group1.get_up_and_down_regulated_hgnc_symbols
+      operationId: biodb_expression_atlas.web.api.atlas.PD_Atlas.get_up_and_down_regulated_hgnc_symbols
       tags:
         - Expression_atlas
       summary: To query expression_atlas

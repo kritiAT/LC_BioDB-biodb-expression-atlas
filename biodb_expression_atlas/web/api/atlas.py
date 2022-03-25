@@ -4,8 +4,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from biodb_expression_atlas.web.models.atlas import *
 from typing import Dict
-class Group1:
-    '''Class for extracting upregulated and downregulated genes from Expression Atlas.'''
+class PD_Atlas:
+    '''Class for extracting upregulated and downregulated genes from Expression Atlas related to Parkinson Disease.'''
     @staticmethod
     def get_up_and_down_regulated_hgnc_symbols(
                  experiment_id: str,
@@ -43,11 +43,11 @@ class Group1:
         elif group_id not in experiment_groups[experiment_id]:
             raise ValueError (f"Incorrect group ID for experiment {experiment_id}")        
 
-        map_dict = {'E-MEXP-1416' : E_MEXP_1416,
-             'E-GEOD-20333' : E_GEOD_20333,
-             'E-GEOD-7307' : E_GEOD_7307,
-             'E-GEOD-7621' : E_GEOD_7621,
-             'E-GEOD-20168' : E_GEOD_20168}
+        # map_dict = {'E-MEXP-1416' : E_MEXP_1416,
+        #      'E-GEOD-20333' : E_GEOD_20333,
+        #      'E-GEOD-7307' : E_GEOD_7307,
+        #      'E-GEOD-7621' : E_GEOD_7621,
+        #      'E-GEOD-20168' : E_GEOD_20168}
         
         # connect to database
         con_str ='mysql+pymysql://pd_user:pd_password@localhost/pd_atlas'
@@ -55,15 +55,15 @@ class Group1:
         session = Session(engine)
         
         # SQL Query
-        experiment_group_id = session.query(Experiments).filter(Experiments.experiment_id==experiment_id, Experiments.group_id==group_id).one()
+        experiment_group_id = session.query(ComparisonGroup).filter(ComparisonGroup.experiment_id==experiment_id, ComparisonGroup.group_id==group_id).one()
         id = experiment_group_id.exp_id
         
-        genes_up = session.query(map_dict[experiment_id].gene_name).filter(map_dict[experiment_id].experiment_group==id, map_dict[experiment_id].p_value < threshold_p_value, \
-                    map_dict[experiment_id].log2foldchange > threshold_log2fold_change).all()
+        genes_up = session.query(Expression.gene_name).filter(Expression.experiment_group==id, Expression.p_value < threshold_p_value, \
+                    Expression.log2foldchange > threshold_log2fold_change).order_by(Expression.log2foldchange).all()
         genes_up = [g[0] for g in genes_up]
         
-        genes_down = session.query(map_dict[experiment_id].gene_name).filter(map_dict[experiment_id].experiment_group==id, map_dict[experiment_id].p_value < threshold_p_value, \
-                    map_dict[experiment_id].log2foldchange < - threshold_log2fold_change).all()
+        genes_down = session.query(Expression.gene_name).filter(Expression.experiment_group==id, Expression.p_value < threshold_p_value, \
+                    Expression.log2foldchange < - threshold_log2fold_change).order_by(Expression.log2foldchange).all()
         genes_down = [g[0] for g in genes_down]
         
         return {'up':genes_up,'down':genes_down}

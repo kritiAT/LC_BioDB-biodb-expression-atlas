@@ -16,57 +16,66 @@ engine = create_engine(con_str)
 session = Session(engine)
 
 
-class Experiments(Base):
+class ComparisonGroup(Base): # change name  to experiment
     """Class definition for parkinson_experiment table."""
-    __tablename__ = 'parkinson_experiment'
-    exp_id = Column(Integer,primary_key = True)
+    __tablename__ = 'comparison_group' # change name  to comparison_group
+    id = Column(Integer,primary_key = True)  # change exp id to id
     experiment_id = Column(String(30),nullable=False)
     group_id = Column(String(30),nullable=False)
 
-class E_MEXP_1416(Base):
-    """Class definition for 'E_MEXP_1416' table."""
-    __tablename__ = 'E_MEXP_1416'
+class Expression(Base):
+    """Class definition for 'expression' table."""
+    __tablename__ = 'expression'
     id = Column(Integer,primary_key = True)
     gene_name = Column(String(30),nullable=False)
     p_value = Column(Float)
     log2foldchange = Column(Float,nullable=False)
-    experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
+    experiment_group = Column(Integer, ForeignKey('comparison_group.id'), nullable=False)
 
-class E_GEOD_20333(Base):
-    """Class definition for 'E_GEOD_20333' table."""
-    __tablename__ = 'E_GEOD_20333'
-    id = Column(Integer,primary_key = True)
-    gene_name = Column(String(30),nullable=False)
-    p_value = Column(Float)
-    log2foldchange = Column(Float,nullable=False)
-    experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
+# class E_MEXP_1416(Base):
+#     """Class definition for 'E_MEXP_1416' table."""
+#     __tablename__ = 'E_MEXP_1416'
+#     id = Column(Integer,primary_key = True)
+#     gene_name = Column(String(30),nullable=False)
+#     p_value = Column(Float)
+#     log2foldchange = Column(Float,nullable=False)
+#     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
 
-class E_GEOD_7307(Base):
-    """Class definition for 'E_GEOD_7307' table."""
-    __tablename__ = 'E_GEOD_7307'
-    id = Column(Integer,primary_key = True)
-    gene_name = Column(String(30),nullable=False)
-    p_value = Column(Float)
-    log2foldchange = Column(Float,nullable=False)
-    experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
+# class E_GEOD_20333(Base):
+#     """Class definition for 'E_GEOD_20333' table."""
+#     __tablename__ = 'E_GEOD_20333'
+#     id = Column(Integer,primary_key = True)
+#     gene_name = Column(String(30),nullable=False)
+#     p_value = Column(Float)
+#     log2foldchange = Column(Float,nullable=False)
+#     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
+
+# class E_GEOD_7307(Base):
+#     """Class definition for 'E_GEOD_7307' table."""
+#     __tablename__ = 'E_GEOD_7307'
+#     id = Column(Integer,primary_key = True)
+#     gene_name = Column(String(30),nullable=False)
+#     p_value = Column(Float)
+#     log2foldchange = Column(Float,nullable=False)
+#     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
     
-class E_GEOD_7621(Base):
-    """Class definition for 'E_GEOD_7621' table."""
-    __tablename__ = 'E_GEOD_7621'
-    id = Column(Integer,primary_key = True)
-    gene_name = Column(String(30),nullable=False)
-    p_value = Column(Float)
-    log2foldchange = Column(Float,nullable=False)
-    experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
+# class E_GEOD_7621(Base):
+#     """Class definition for 'E_GEOD_7621' table."""
+#     __tablename__ = 'E_GEOD_7621'
+#     id = Column(Integer,primary_key = True)
+#     gene_name = Column(String(30),nullable=False)
+#     p_value = Column(Float)
+#     log2foldchange = Column(Float,nullable=False)
+#     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
     
-class E_GEOD_20168(Base):
-    """Class definition for 'E_GEOD_20168' table."""
-    __tablename__ = 'E_GEOD_20168'
-    id = Column(Integer,primary_key = True)
-    gene_name = Column(String(30),nullable=False)
-    p_value = Column(Float)
-    log2foldchange = Column(Float,nullable=False)
-    experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
+# class E_GEOD_20168(Base):
+#     """Class definition for 'E_GEOD_20168' table."""
+#     __tablename__ = 'E_GEOD_20168'
+#     id = Column(Integer,primary_key = True)
+#     gene_name = Column(String(30),nullable=False)
+#     p_value = Column(Float)
+#     log2foldchange = Column(Float,nullable=False)
+#     experiment_group = Column(Integer, ForeignKey('parkinson_experiment.exp_id'), nullable=False)
 
 
 class PD_db:
@@ -112,7 +121,7 @@ class PD_db:
         parkinson_exp = pd.DataFrame(exp_group.items(), columns=['experiment_id', 'group_id'])
         parkinson_exp = parkinson_exp.explode('group_id', ignore_index=True)
         parkinson_exp.set_axis([i for i in range(1, len(parkinson_exp) + 1)], axis=0, inplace=True)
-        parkinson_exp.rename_axis('exp_id', inplace=True)
+        parkinson_exp.rename_axis('id', inplace=True)
         self.parkinson_exp = parkinson_exp
     
     def _experiment_tables(self):
@@ -123,7 +132,7 @@ class PD_db:
         # concate tables of different groups with same experiment to one experiment table
 
         # store tables (to insert in database)
-        exp_tables = {}
+        exp_tables = pd.DataFrame(columns=['gene_name', 'p_value', 'log2foldchange', 'experiment_group'])
 
         for path in datafile_paths:
             # read data files
@@ -133,18 +142,17 @@ class PD_db:
             # find the groups with same the experiment
             groups = self.parkinson_exp[self.parkinson_exp['experiment_id'] == exp_name]
             # concat group tables
-            for exp_id, (exp_name, group) in groups.iterrows():
-                colnames = {'Gene Name' : 'gene_name', 
+            for index, (exp_id, group) in groups.iterrows():
+                colnames = {'Gene Name' : 'gene_name',
                             f'{group}.p-value' : 'p_value',
                             f'{group}.log2foldchange' : 'log2foldchange'}
                 df = data[['Gene Name', f'{group}.p-value', f'{group}.log2foldchange']].copy(deep=False)
                 df.rename(columns=colnames, inplace=True)
-                df['experiment_group'] = [exp_id for i in range(len(df))]
-                if exp_name in exp_tables:
-                    group_df = exp_tables[exp_name].copy(deep=False)
-                    exp_tables[exp_name] = pd.concat([group_df, df])
-                else:
-                    exp_tables[exp_name] = df
+                df['experiment_group'] = [index for i in range(len(df))]
+                exp_tables = pd.concat([exp_tables, df], ignore_index=True)
+
+        exp_tables.index += 1
+        exp_tables.rename_axis('id', inplace=True)
         
         self.exp_tables = exp_tables
     
@@ -152,11 +160,8 @@ class PD_db:
         # Imports data from dataframe into database
         self._experiment_groups()
         self._experiment_tables()
-        self.parkinson_exp.to_sql('parkinson_experiment', self.engine, if_exists='append', index=True)
-        for name, table in self.exp_tables.items():
-            table.set_axis([i for i in range(1, len(table) + 1)], axis=0, inplace=True)
-            table.rename_axis('id', inplace=True)
-            table.to_sql(name.lower().replace('-', '_'), self.engine, if_exists='append', index=True)
+        self.parkinson_exp.to_sql('comparison_group', self.engine, if_exists='append', index=True)
+        self.exp_tables.to_sql('expression', self.engine, if_exists='append', index=True)
 
 
 ### wrapper function to create the database
