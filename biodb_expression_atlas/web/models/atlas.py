@@ -1,14 +1,14 @@
 import os
 import pandas as pd
+import pymysql
+from getpass import getpass
 
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, create_engine
 
 from .startup import datafile_paths
-from .startup import create_new_database
 
-create_new_database()
 Base = declarative_base()
 
 con_str ='mysql+pymysql://pd_user:pd_password@localhost/pd_atlas'
@@ -79,10 +79,28 @@ class PD_db:
     
 
     def create_database(self):
+
+        self.create_new_db()
         self.Base.metadata.drop_all(self.engine)
         self.Base.metadata.create_all(self.engine)
         self._import_data()
+
+    def create_new_db(self):
+        root_password = getpass(prompt='MySQL root password: ')
+
+        conn_root = pymysql.connect(host='localhost',
+                                    user='root',
+                                    password=root_password,
+                                    charset='utf8mb4')
+        cursor_root = conn_root.cursor()
     
+        cursor_root.execute("DROP DATABASE IF EXISTS pd_atlas")
+        cursor_root.execute("CREATE DATABASE IF NOT EXISTS pd_atlas")
+        cursor_root.execute("CREATE USER IF NOT EXISTS 'pd_user'@'localhost' IDENTIFIED BY 'pd_password'")
+        cursor_root.execute("GRANT ALL ON `pd_atlas`.* TO 'pd_user'@'localhost'")
+        cursor_root.execute("FLUSH PRIVILEGES")
+        conn_root.close()
+
     def _experiment_groups(self):
         exp_group = {'E-MEXP-1416' : ['g2_g1', 'g4_g3'],
                      'E-GEOD-20333' : ['g2_g1'],

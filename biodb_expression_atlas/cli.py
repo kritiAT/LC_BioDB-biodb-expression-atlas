@@ -3,9 +3,6 @@ import sys
 import click
 from .web import app
 from .web.models.atlas import database
-from .web.models.startup import create_new_database
-from getpass import getpass
-import pymysql
 
 
 @click.command()
@@ -31,7 +28,6 @@ def serve(port, debug_mode, open_browser):
 @main.command()
 def import_database():
     """Import data in db."""
-    create_new_database()
     database()
 
 
